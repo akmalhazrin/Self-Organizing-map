@@ -1,6 +1,6 @@
 ---
-title: My Document
-author: Deden Istiawan-Institut Teknologi Statistika dan Bisnis Muhammadiyah
+title: Algoritma Self-Organizing Map Dengan R
+author: Akmal Hazrin-Institut Teknologi Statistika dan Bisnis Muhammadiyah
 date: "`r Sys.Date()`"
 output:
   prettydoc::html_pretty:
@@ -19,24 +19,46 @@ text-align: justify}
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-# R Markdown
+# Algoritma Self-Organizing Map
+SOM adalah singkatan dari Self Organizing Maps atau sering disebut topology-preserving map pertama kali diperkenalkan oleh Teuvo Kohonen pada tahun 1996, dikenal juga dengan nama Kohonen Networks. SOM biasa digunakan dalam kasus unsupervised algorithm, dimana data yang digunakan dalam proses train tidak memiliki label. Dengan kata lain, SOM adalah network yang dapat mengorganisis dirinya sendiri.
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents [@deCarvalho2012]. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+# SOM Analysis
+In this article, we want to use web analytics dataset in San Francisco. We want to learn how to use SOM to identify characteristics of each cluster in many webs on San Francisco by some features.
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+## Library
 
-```{r cars}
-summary(cars)
+
+```{r}
+library(kohonen)
 ```
 
-## Including Plots
+```{r}
+data("iris")
+str(iris)
+head(iris)
 
-You can also embed plots, for example:
-
-```{r pressure, echo=FALSE}
-plot(pressure)
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+```{r}
+iris<-scale(iris[-5])
+irisskala
+```
+```{r}
+grid =somgrid(xdim=5, ydim=5, topo=c("hexagonal"))
+grid
+```
+
+```{r}
+som.iris<-som(scale(iris[-5]), grid=somgrid(5,5,"hexagonal"))
+```
+
+
+```{r}
+plot(som.iris)
+```
+
+
+
+# Tahapan Algoritma Self-Organizing Map
 
 # Referensi

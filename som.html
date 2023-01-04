@@ -12,7 +12,7 @@
 
 <meta name="author" content="Akmal Hazrin-Institut Teknologi Statistika dan Bisnis Muhammadiyah" />
 
-<meta name="date" content="2022-12-29" />
+<meta name="date" content="2023-01-05" />
 
 <title>Algoritma Self-Organizing Map Dengan R</title>
 
@@ -152,7 +152,7 @@ code span.ot { color: #007020; }
 Dengan R</h1>
 <h4 class="author project-author">Akmal Hazrin-Institut Teknologi
 Statistika dan Bisnis Muhammadiyah</h4>
-<h4 class="date project-date">2022-12-29</h4>
+<h4 class="date project-date">2023-01-05</h4>
 </section>
 
 
@@ -178,66 +178,44 @@ Francisco. We want to learn how to use SOM to identify characteristics
 of each cluster in many webs on San Francisco by some features.</p>
 <div id="library" class="section level2">
 <h2>Library</h2>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(kohonen)</span></code></pre></div>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;iris&quot;</span>)</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(iris)</span></code></pre></div>
-<pre><code>## &#39;data.frame&#39;:    150 obs. of  5 variables:
-##  $ Sepal.Length: num  5.1 4.9 4.7 4.6 5 5.4 4.6 5 4.4 4.9 ...
-##  $ Sepal.Width : num  3.5 3 3.2 3.1 3.6 3.9 3.4 3.4 2.9 3.1 ...
-##  $ Petal.Length: num  1.4 1.4 1.3 1.5 1.4 1.7 1.4 1.5 1.4 1.5 ...
-##  $ Petal.Width : num  0.2 0.2 0.2 0.2 0.2 0.4 0.3 0.2 0.2 0.1 ...
-##  $ Species     : Factor w/ 3 levels &quot;setosa&quot;,&quot;versicolor&quot;,..: 1 1 1 1 1 1 1 1 1 1 ...</code></pre>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(iris)</span></code></pre></div>
-<pre><code>##   Sepal.Length Sepal.Width Petal.Length Petal.Width Species
-## 1          5.1         3.5          1.4         0.2  setosa
-## 2          4.9         3.0          1.4         0.2  setosa
-## 3          4.7         3.2          1.3         0.2  setosa
-## 4          4.6         3.1          1.5         0.2  setosa
-## 5          5.0         3.6          1.4         0.2  setosa
-## 6          5.4         3.9          1.7         0.4  setosa</code></pre>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>iris<span class="ot">&lt;-</span><span class="fu">scale</span>(iris[<span class="sc">-</span><span class="dv">5</span>])</span></code></pre></div>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>grid</span></code></pre></div>
-<pre><code>## function (nx = NULL, ny = nx, col = &quot;lightgray&quot;, lty = &quot;dotted&quot;, 
-##     lwd = par(&quot;lwd&quot;), equilogs = TRUE) 
-## {
-##     if (is.null(nx) || (!is.na(nx) &amp;&amp; nx &gt;= 1)) {
-##         log &lt;- par(&quot;xlog&quot;)
-##         if (is.null(nx)) {
-##             ax &lt;- par(&quot;xaxp&quot;)
-##             if (log &amp;&amp; equilogs &amp;&amp; ax[3L] &gt; 0) 
-##                 ax[3L] &lt;- 1
-##             at &lt;- axTicks(1, axp = ax, log = log)
-##         }
-##         else {
-##             U &lt;- par(&quot;usr&quot;)
-##             at &lt;- seq.int(U[1L], U[2L], length.out = nx + 1)
-##             at &lt;- (if (log) 
-##                 10^at
-##             else at)[-c(1, nx + 1)]
-##         }
-##         abline(v = at, col = col, lty = lty, lwd = lwd)
-##     }
-##     if (is.null(ny) || (!is.na(ny) &amp;&amp; ny &gt;= 1)) {
-##         log &lt;- par(&quot;ylog&quot;)
-##         if (is.null(ny)) {
-##             ax &lt;- par(&quot;yaxp&quot;)
-##             if (log &amp;&amp; equilogs &amp;&amp; ax[3L] &gt; 0) 
-##                 ax[3L] &lt;- 1
-##             at &lt;- axTicks(2, axp = ax, log = log)
-##         }
-##         else {
-##             U &lt;- par(&quot;usr&quot;)
-##             at &lt;- seq.int(U[3L], U[4L], length.out = ny + 1)
-##             at &lt;- (if (log) 
-##                 10^at
-##             else at)[-c(1, ny + 1)]
-##         }
-##         abline(h = at, col = col, lty = lty, lwd = lwd)
-##     }
-## }
-## &lt;bytecode: 0x0000026f36220168&gt;
-## &lt;environment: namespace:graphics&gt;</code></pre>
-<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>som.iris<span class="ot">&lt;-</span><span class="fu">som</span>(<span class="fu">scale</span>(iris[<span class="sc">-</span><span class="dv">5</span>]), <span class="at">grid=</span><span class="fu">somgrid</span>(<span class="dv">5</span>,<span class="dv">5</span>,<span class="st">&quot;hexagonal&quot;</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(class)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(MASS)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(Rcpp)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(kohonen)</span></code></pre></div>
+<pre><code>## 
+## Attaching package: &#39;kohonen&#39;</code></pre>
+<pre><code>## The following object is masked from &#39;package:class&#39;:
+## 
+##     somgrid</code></pre>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">search</span>()</span></code></pre></div>
+<pre><code>##  [1] &quot;.GlobalEnv&quot;        &quot;package:kohonen&quot;   &quot;package:Rcpp&quot;     
+##  [4] &quot;package:MASS&quot;      &quot;package:class&quot;     &quot;package:stats&quot;    
+##  [7] &quot;package:graphics&quot;  &quot;package:grDevices&quot; &quot;package:utils&quot;    
+## [10] &quot;package:datasets&quot;  &quot;package:methods&quot;   &quot;Autoloads&quot;        
+## [13] &quot;package:base&quot;</code></pre>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ls</span>(<span class="dv">2</span>)</span></code></pre></div>
+<pre><code>##  [1] &quot;add.cluster.boundaries&quot; &quot;check.whatmap&quot;          &quot;classmat2classvec&quot;     
+##  [4] &quot;classvec2classmat&quot;      &quot;dist2WU&quot;                &quot;expandMap&quot;             
+##  [7] &quot;getCodes&quot;               &quot;layer.distances&quot;        &quot;map&quot;                   
+## [10] &quot;nunits&quot;                 &quot;object.distances&quot;       &quot;som&quot;                   
+## [13] &quot;somgrid&quot;                &quot;supersom&quot;               &quot;tricolor&quot;              
+## [16] &quot;unit.distances&quot;         &quot;xyf&quot;</code></pre>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(wines)</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(wines)</span></code></pre></div>
+<pre><code>##      alcohol malic acid  ash ash alkalinity magnesium tot. phenols flavonoids
+## [1,]   13.20       1.78 2.14           11.2       100         2.65       2.76
+## [2,]   13.16       2.36 2.67           18.6       101         2.80       3.24
+## [3,]   14.37       1.95 2.50           16.8       113         3.85       3.49
+## [4,]   13.24       2.59 2.87           21.0       118         2.80       2.69
+## [5,]   14.20       1.76 2.45           15.2       112         3.27       3.39
+## [6,]   14.39       1.87 2.45           14.6        96         2.50       2.52
+##      non-flav. phenols proanth col. int. col. hue OD ratio proline
+## [1,]              0.26    1.28      4.38     1.05     3.40    1050
+## [2,]              0.30    2.81      5.68     1.03     3.17    1185
+## [3,]              0.24    2.18      7.80     0.86     3.45    1480
+## [4,]              0.39    1.82      4.32     1.04     2.93     735
+## [5,]              0.34    1.97      6.75     1.05     2.85    1450
+## [6,]              0.30    1.98      5.25     1.02     3.58    1290</code></pre>
 </div>
 </div>
 <div id="tahapan-algoritma-self-organizing-map" class="section level1">

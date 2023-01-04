@@ -29,34 +29,42 @@ In this article, we want to use web analytics dataset in San Francisco. We want 
 
 
 ```{r}
+library(class)
+library(MASS)
+library(Rcpp)
 library(kohonen)
 ```
-
 ```{r}
-data("iris")
-str(iris)
-head(iris)
-
-```
-
-```{r}
-iris<-scale(iris[-5])
-irisskala
+search()
+ls(2)
+data(wines)
+head(wines)
 ```
 ```{r}
-grid =somgrid(xdim=5, ydim=5, topo=c("hexagonal"))
-grid
-```
-
-```{r}
-som.iris<-som(scale(iris[-5]), grid=somgrid(5,5,"hexagonal"))
+scale(wines)
+head(scale(wines))
 ```
 
 
 ```{r}
-plot(som.iris)
+grid<-somgrid(xdim = 5, ydim = 5, topo = "hexagonal")
+som.wines<-som(scale(wines), grid=somgrid(xdim = 5, ydim = 5, topo = "hexagonal"))
+str(som.wines)
+plot(som.wines, type = "mapping")
 ```
 
+```{r}
+som.wines$grid$pts
+som.wines$unit.classif
+```
+
+```{r}
+plot(som.wines)
+```
+
+```{r}
+text(som.wines$grid$pts, labels = som.wines$unit.classif, cex = 1.5)
+```
 
 
 # Tahapan Algoritma Self-Organizing Map

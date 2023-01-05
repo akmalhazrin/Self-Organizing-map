@@ -62,9 +62,7 @@ som.wines$unit.classif
 plot(som.wines)
 ```
 
-```{r}
-text(som.wines$grid$pts, labels = som.wines$unit.classif, cex = 1.5)
-```
+
 
 
 # Tahapan Algoritma Self-Organizing Map

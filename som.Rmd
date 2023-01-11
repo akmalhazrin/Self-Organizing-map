@@ -62,8 +62,27 @@ som.wines$unit.classif
 plot(som.wines)
 ```
 
+```{r}
+text(som.wines$grid$pts, labels = som.wines$unit.classif, cex = 1.5)
+```
 
+```{r}
+str(som.wines)
+som.wines$codes[[1]]
+```
 
+```{r}
+peta<-cutree(hclust(dist(som.wines$codes[[1]])),5)
+plot(peta)
+```
+
+```{r}
+plot(som.wines, type = “codes”,bgcol = rainbow(5)[peta])
+```
+
+```{r}
+add.cluster.boundaries(som.wines, peta)
+```
 
 # Tahapan Algoritma Self-Organizing Map
 

@@ -28,33 +28,40 @@ SOM merupakan salah satu teknik dalam Neural Network yang bertujuan untuk melaku
 # Tahapan Self-Organizing Map
 
 ## Library
+kita panggil package yang akan kita gunakan.
 ```{r}
 library(kohonen)
 ```
 ### Masukan dataset Swiss
+muat dataset yang akan dianalisis, yaitu dataset swiss.
 ```{r}
 data(swiss)
 head(swiss)
 ```
-
+Jika akan melihat dimensi dataset swiss menggunakan sintaks dim(swiss) dan diperoleh hasil sebagai berikut
 
 ```{r}
 dim(swiss)
 ```
+Dataset swiss memiliki 47 observasi dan 6 variabel. Kemudian kita akan melakukan scaling pada dataset swiss.
 
 ```{r}
 scale(swiss)
 head(scale(swiss))
 ```
-
+Setelah itu, kita akan mengubah data frame swiss menjadi bentuk matriks.
 ```{r}
 swiss = as.matrix(swiss)
 ```
+Selanjutnya kita masuk pada analisis SOM. Kali ini akan dilakukan pengelompokan menggunakan SOM dengan x=3 dan y=3 menggunakan sintaks berikut
 
+### Mapping Plot
 ```{r}
 som.swiss = som(scale(swiss), grid = somgrid(xdim = 3, ydim = 3, topo = "hexagonal"))
 plot(som.swiss, type = "mapping")
 ```
+
+Berdasarkan hasil tersebut akan dilihat titik-titik pada map menggunakan sintaks som.swiss$grid$pts dan untuk melihat keanggotaan dari masing-masing observasi digunakan sintaks som.swiss$unit.classif.
 
 ```{r}
 som.swiss$grid$pts
@@ -64,21 +71,32 @@ som.swiss$grid$pts
 som.swiss$unit.classif
 ```
 
+Berdasarkan output, diketahui bahwa lingkaran 1 dimulai dari lingkaran kiri bawah dan lingkaran 9 adalah lingkaran yang terdapat pada kanan atas. Kemudian diketahui juga bahwa observasi 1 termasuk ke dalam lingkaran 3, observasi 2 termasuk ke dalam lingkaran 8, dan seterusnya hingga observasi 47 termasuk ke dalam lingkaran 7 pada mapping plot.
+
+Kemudian untuk plot secara keseluruhan, kita gunakan sintaks plot(som.swiss).
+
 ```{r}
 plot(som.swiss)
 ```
 
+Berdasarkan output, diketahui bahwa seluruh variabel tidak direduksi. Semua variabel tetap ditampilkan dalam plot dengan diwakili oleh warna yang berbeda. Plot yang dihasilkan tersebut mewakili objek yang masuk dalam lingkaran. Contohnya, objek yang terdapat pada lingkaran 7 merupakan objek yang memiliki % Examination dan Education yang tinggi.
+
+Kemudian kita akan menampilkan data yang dihasilkan oleh analisis SOM
 ```{r}
 som.swiss$codes[[1]]
 ```
 
+Data yang semula memiliki 47 objek dari 6 variabel, saat ini menjadi 9 objek dari 6 variabel. Kemudian, kita hitung jarak antar objek menggunakan sintaks dist(som.swiss$codes[[1]]).
+
 ```{r}
 dist(som.swiss$codes[[1]])
 ```
-
+Setelah itu kita akan mengelompokkan data menggunakan hierarchical clustering dengan k sebanyak 3.
 ```{r}
 hclust(dist(som.swiss$codes[[1]]))
 ```
+
+Metode yang digunakan dalam pengelompokan adalah metode Complete dan jarak yang digunakan merupakan jarak Euclidean.
 
 ```{r}
 peta = cutree(hclust(dist(som.swiss$codes[[1]])), 3)
@@ -86,10 +104,15 @@ plot(som.swiss, type = "codes", bgcol = rainbow(3)[peta])
 add.cluster.boundaries(som.swiss, peta)
 ```
 
+Lalu, bagaimana jika terdapat observasi baru dengan Fertility sebesar 1.03, Agriculture sebesar -0.68, Examination sebesar 0.92, Education sebesar 0.144, Catholic sebesar 1.08, dan Infant Mortality sebesar 1.04, termasuk dalam klasifikasi/lingkaran berapa?
+
 ```{r}
 uji = c(1.03, -0.68, 0.92, 0.144, 1.08, 1.04)
 ujidf = as.matrix(uji)
 dim(ujidf) = c(1, 6)
 map(som.swiss, scale(ujidf, center = attr(scale(swiss), "scaled:center"), scale = attr(scale(swiss), "scaled:scale")))
 ```
+Berdasarkan output, kita ketahui bahwa observasi baru tersebut termasuk dalam unit klasifikasi/lingkaran 4 dalam mapping plot.
 
+# Referensi
+https://medium.com/@kurniasp/self-organizing-maps-using-kohonen-in-r-a509ac4b25eb
